@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Catálogo de Tareas - Automatización</title>
+    <style>
+        /* Estilos Generales */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background-color: #f4f7f6;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Sección Hero */
+        .hero {
+            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
+            color: #ffffff;
+            text-align: center;
+            padding: 80px 20px;
+        }
+
+        .hero h1 {
+            font-size: 2.5rem;
+            margin-bottom: 15px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .hero p {
+            font-size: 1.2rem;
+            color: #e0e1dd;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* Contenedor Principal / Catálogo */
+        .container {
+            max-width: 1200px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .grid-tareas {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 25px;
+        }
+
+        /* Diseño de Tarjetas (Cards) */
+        .card {
+            background: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
+        }
+
+        .card-header {
+            background-color: #00979d; /* Color característico tipo Arduino */
+            color: #ffffff;
+            padding: 15px 20px;
+        }
+
+        .card-header h2 {
+            font-size: 1.3rem;
+        }
+
+        .card-body {
+            padding: 20px;
+            flex-grow: 1;
+        }
+
+        .card-body p {
+            font-size: 0.95rem;
+            color: #555;
+            margin-bottom: 15px;
+        }
+
+        .tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-top: 10px;
+        }
+
+        .tag {
+            background-color: #e0f2f1;
+            color: #004d40;
+            font-size: 0.8rem;
+            padding: 4px 10px;
+            border-radius: 15px;
+            font-weight: bold;
+        }
+
+        .card-footer {
+            padding: 15px 20px;
+            background-color: #fafafa;
+            border-top: 1px solid #eee;
+            text-align: right;
+        }
+
+        .btn {
+            display: inline-block;
+            background-color: #1b263b;
+            color: #ffffff;
+            padding: 8px 16px;
+            text-decoration: none;
+            border-radius: 5px;
+            font-size: 0.9rem;
+            transition: background 0.3s ease;
+        }
+
+        .btn:hover {
+            background-color: #415a77;
+        }
+
+        /* Adaptabilidad Móvil */
+        @media (max-width: 768px) {
+            .hero h1 {
+                font-size: 1.8rem;
+            }
+
+            .hero p {
+                font-size: 1rem;
+            }
+
+            .hero {
+                padding: 50px 15px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="hero">
+        <h1>Automatización de Procesos Industriales y de Servicios</h1>
+        <p>Catálogo de proyectos, practicas y tareas enfocadas en control, sensores e IoT.</p>
+    </header>
+
+    <main class="container">
+        <section class="grid-tareas">
+
+            <article class="card">
+                <div class="card-header">
+                    <h2>Tarea 1: Fundamentos de Automatización</h2>
+                </div>
+                <div class="card-body">
+                    <p>Introducción a los conceptos clave de la automatización en la industria y los servicios. Uso de microcontroladores Arduino para la adquisición de datos de sensores y control de actuadores, integrando conectividad IoT para el monitoreo en tiempo real.</p>
+                   
+                    <div class="tags">
+                        <span class="tag">Arduino</span>
+                        <span class="tag">IoT</span>
+                        <span class="tag">Sensores</span>
+                        <span class="tag">Control</span>
+                    </div>
+                </div>
+                <div class="card-footer">
+                    <a href="#" class="btn">Ver Detalle</a>
+                </div>
+            </article>
+
+            </section>
+    </main>
+
+</body>
+</html>
