@@ -1,181 +1,814 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Catálogo de Tareas - Automatización</title>
-    <style>
-        /* Estilos Generales */
-        * {
-            box-sizing: border-box;
-            margin: 0;
-            padding: 0;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        }
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Fundamentos de automatización de procesos industriales y de servicios</title>
+<style>
 
-        body {
-            background-color: #f4f7f6;
-            color: #333;
-            line-height: 1.6;
-        }
+  @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
 
-        /* Sección Hero */
-        .hero {
-            background: linear-gradient(135deg, #0d1b2a 0%, #1b263b 50%, #415a77 100%);
-            color: #ffffff;
-            text-align: center;
-            padding: 80px 20px;
-        }
+  :root{
+    --bg:            #12171c;
+    --bg-panel:      #1a222a;
+    --bg-panel-hi:   #202a33;
+    --grid-line:     #26323d;
+    --border:        #2c3944;
+    --accent-amber:  #e8a33d;
+    --accent-amber-dim: #a8792f;
+    --accent-teal:   #4fa3a8;
+    --text-primary:  #edf0f2;
+    --text-secondary:#8ea1ac;
+    --text-muted:    #5f7180;
 
-        .hero h1 {
-            font-size: 2.5rem;
-            margin-bottom: 15px;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-        }
+    --font-display: 'Space Grotesk', sans-serif;
+    --font-body:    'IBM Plex Sans', sans-serif;
+    --font-mono:    'IBM Plex Mono', monospace;
+  }
 
-        .hero p {
-            font-size: 1.2rem;
-            color: #e0e1dd;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+  *{ box-sizing: border-box; margin:0; padding:0; }
+  html{ scroll-behavior: smooth; }
 
-        /* Contenedor Principal / Catálogo */
-        .container {
-            max-width: 1200px;
-            margin: 40px auto;
-            padding: 0 20px;
-        }
+  body{
+    background: var(--bg);
+    color: var(--text-primary);
+    font-family: var(--font-body);
+    line-height: 1.6;
+    -webkit-font-smoothing: antialiased;
+  }
 
-        .grid-tareas {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 25px;
-        }
+  img, svg{ display:block; max-width:100%; }
+  a{ color: inherit; text-decoration: none; }
 
-        /* Diseño de Tarjetas (Cards) */
-        .card {
-            background: #ffffff;
-            border-radius: 10px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-            overflow: hidden;
-            transition: transform 0.3s ease, box-shadow 0.3s ease;
-            display: flex;
-            flex-direction: column;
-        }
+  :focus-visible{
+    outline: 2px solid var(--accent-amber);
+    outline-offset: 3px;
+  }
 
-        .card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.15);
-        }
+  @media (prefers-reduced-motion: reduce){
+    *{ animation: none !important; transition: none !important; }
+  }
 
-        .card-header {
-            background-color: #00979d; /* Color característico tipo Arduino */
-            color: #ffffff;
-            padding: 15px 20px;
-        }
+  .wrap{
+    max-width: 1180px;
+    margin: 0 auto;
+    padding: 0 clamp(20px, 5vw, 48px);
+  }
 
-        .card-header h2 {
-            font-size: 1.3rem;
-        }
+  /* ---------- NAV ---------- */
 
-        .card-body {
-            padding: 20px;
-            flex-grow: 1;
-        }
+  .site-nav{
+    position: sticky;
+    top: 0;
+    z-index: 30;
+    background: rgba(18,23,28,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+  }
 
-        .card-body p {
-            font-size: 0.95rem;
-            color: #555;
-            margin-bottom: 15px;
-        }
+  .site-nav .wrap{
+    display:flex;
+    align-items:center;
+    justify-content: space-between;
+    height: 64px;
+  }
 
-        .tags {
-            display: flex;
-            flex-wrap: wrap;
-            gap: 8px;
-            margin-top: 10px;
-        }
+  .brand{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    font-family: var(--font-display);
+    font-weight:600;
+    font-size: 1rem;
+  }
 
-        .tag {
-            background-color: #e0f2f1;
-            color: #004d40;
-            font-size: 0.8rem;
-            padding: 4px 10px;
-            border-radius: 15px;
-            font-weight: bold;
-        }
+  .brand-mark{ width: 20px; height: 20px; flex: none; }
 
-        .card-footer {
-            padding: 15px 20px;
-            background-color: #fafafa;
-            border-top: 1px solid #eee;
-            text-align: right;
-        }
+  .nav-meta{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display:flex;
+    align-items:center;
+    gap:8px;
+  }
 
-        .btn {
-            display: inline-block;
-            background-color: #1b263b;
-            color: #ffffff;
-            padding: 8px 16px;
-            text-decoration: none;
-            border-radius: 5px;
-            font-size: 0.9rem;
-            transition: background 0.3s ease;
-        }
+  .nav-meta .dot{
+    width:6px; height:6px;
+    border-radius:50%;
+    background: var(--accent-amber);
+    box-shadow: 0 0 0 3px rgba(232,163,61,0.15);
+  }
 
-        .btn:hover {
-            background-color: #415a77;
-        }
+  @media (max-width: 560px){ .nav-meta{ display:none; } }
 
-        /* Adaptabilidad Móvil */
-        @media (max-width: 768px) {
-            .hero h1 {
-                font-size: 1.8rem;
-            }
+  /* ---------- TOC ---------- */
 
-            .hero p {
-                font-size: 1rem;
-            }
+  .toc-nav{
+    position: sticky;
+    top: 64px;
+    z-index: 25;
+    background: rgba(26,34,42,0.92);
+    backdrop-filter: blur(6px);
+    border-bottom: 1px solid var(--border);
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .toc-nav::-webkit-scrollbar{ display:none; }
 
-            .hero {
-                padding: 50px 15px;
-            }
-        }
-    </style>
+  .toc-nav ul{
+    list-style:none;
+    display:flex;
+    gap: 4px;
+    padding: 0 clamp(20px, 5vw, 48px);
+    max-width: 1180px;
+    margin: 0 auto;
+    white-space: nowrap;
+  }
+
+  .toc-nav a{
+    display:inline-flex;
+    align-items:center;
+    gap:6px;
+    padding: 13px 14px;
+    font-size: 0.85rem;
+    color: var(--text-secondary);
+    border-bottom: 2px solid transparent;
+    transition: color 0.15s ease, border-color 0.15s ease;
+  }
+
+  .toc-nav a:hover{ color: var(--text-primary); }
+
+  .toc-nav a .num{
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+  }
+
+  /* ---------- HERO ---------- */
+
+  .hero{
+    position: relative;
+    overflow: hidden;
+    padding: clamp(52px, 9vw, 100px) 0 clamp(44px, 7vw, 72px);
+    border-bottom: 1px solid var(--border);
+    background:
+      linear-gradient(180deg, rgba(18,23,28,0) 0%, rgba(18,23,28,0.55) 78%, var(--bg) 100%),
+      var(--bg);
+  }
+
+  .hero-grid{
+    position:absolute; inset:0;
+    background-image:
+      linear-gradient(var(--grid-line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+    background-size: 42px 42px;
+    -webkit-mask-image: radial-gradient(ellipse 70% 65% at 30% 20%, black 40%, transparent 85%);
+            mask-image: radial-gradient(ellipse 70% 65% at 30% 20%, black 40%, transparent 85%);
+    opacity: 0.9;
+  }
+
+  .hero-content{ position:relative; max-width: 760px; }
+
+  .hero-kicker{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--accent-teal);
+    margin-bottom: 18px;
+  }
+
+  .hero h1{
+    font-family: var(--font-display);
+    font-weight: 700;
+    font-size: clamp(1.9rem, 4.8vw, 3.1rem);
+    line-height: 1.12;
+    letter-spacing: -0.01em;
+    max-width: 16ch;
+  }
+
+  .hero p{
+    margin-top: 20px;
+    font-size: clamp(1rem, 1.6vw, 1.08rem);
+    color: var(--text-secondary);
+    max-width: 58ch;
+  }
+
+  .hero-stats{
+    position: relative;
+    display:flex;
+    flex-wrap: wrap;
+    margin-top: 40px;
+    border: 1px solid var(--border);
+    background: rgba(26,34,42,0.5);
+  }
+
+  .stat{
+    flex: 1 1 140px;
+    padding: 16px 22px;
+    border-right: 1px solid var(--border);
+  }
+  .stat:last-child{ border-right:none; }
+
+  .stat-value{
+    font-family: var(--font-display);
+    font-size: 1.6rem;
+    font-weight: 600;
+  }
+
+  .stat-label{
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--text-muted);
+    margin-top: 4px;
+  }
+
+  /* ---------- SECTIONS ---------- */
+
+  .section{
+    padding: clamp(56px, 8vw, 96px) 0;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-head{
+    display:flex;
+    align-items: baseline;
+    gap: 16px;
+    margin-bottom: 32px;
+  }
+
+  .section-num{
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    color: var(--accent-amber);
+    flex: none;
+  }
+
+  .section-head h2{
+    font-family: var(--font-display);
+    font-size: clamp(1.35rem, 3vw, 1.85rem);
+    font-weight: 600;
+  }
+
+  .section-lead{
+    color: var(--text-secondary);
+    max-width: 68ch;
+    margin-bottom: 32px;
+  }
+
+  .section-lead + .section-lead{ margin-top: -20px; }
+
+  /* ---------- TIMELINE (historia) ---------- */
+
+  .timeline{ display:flex; flex-direction:column; }
+
+  .timeline-item{
+    display:grid;
+    grid-template-columns: 64px 1fr;
+    gap: 20px;
+    padding: 22px 0;
+    border-top: 1px solid var(--border);
+  }
+  .timeline-item:last-child{ border-bottom: 1px solid var(--border); }
+
+  .timeline-year{
+    font-family: var(--font-mono);
+    font-size: 0.82rem;
+    color: var(--text-muted);
+    padding-top: 3px;
+  }
+
+  .timeline-body h3{
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    font-weight: 600;
+    margin-bottom: 6px;
+  }
+
+  .timeline-body p{ color: var(--text-secondary); max-width: 62ch; font-size: 0.95rem; }
+
+  /* ---------- CONCEPT GLOSSARY ---------- */
+
+  .concept-grid{
+    display:grid;
+    grid-template-columns: 1fr;
+    border: 1px solid var(--border);
+    background: rgba(26,34,42,0.4);
+  }
+
+  @media (min-width: 760px){
+    .concept-grid{ grid-template-columns: 1fr 1fr; }
+  }
+
+  .concept{
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+  }
+
+  .concept-grid > .concept:nth-child(1),
+  .concept-grid > .concept:nth-child(2){ border-top: none; }
+
+  @media (min-width: 760px){
+    .concept:nth-child(odd){ border-right: 1px solid var(--border); }
+  }
+
+  .concept dt{
+    font-family: var(--font-mono);
+    font-size: 0.88rem;
+    color: var(--accent-teal);
+    margin-bottom: 6px;
+  }
+
+  .concept dd{ color: var(--text-secondary); font-size: 0.92rem; }
+
+  /* ---------- CYCLE DIAGRAM ---------- */
+
+  .cycle-wrap{
+    display:flex;
+    justify-content:center;
+    padding: 12px 0 8px;
+  }
+
+  .cycle-wrap svg{ width: 100%; max-width: 480px; height:auto; }
+
+  .cycle-node circle{
+    fill: var(--bg-panel-hi);
+    stroke: var(--accent-amber);
+    stroke-width: 2;
+  }
+
+  .cycle-node text{
+    fill: var(--text-primary);
+    font-family: var(--font-mono);
+    font-size: 15px;
+    text-anchor: middle;
+    dominant-baseline: middle;
+  }
+
+  .cycle-label{
+    font-family: var(--font-body);
+    font-weight: 500;
+    font-size: 14px;
+    fill: var(--text-primary);
+  }
+
+  .cycle-label tspan.sub{ fill: var(--text-secondary); font-size: 12px; }
+
+  .cycle-path{
+    fill:none;
+    stroke: var(--grid-line);
+    stroke-width: 2;
+  }
+
+  .cycle-center{
+    font-family: var(--font-mono);
+    font-size: 12px;
+    fill: var(--text-muted);
+    text-anchor: middle;
+  }
+
+  /* ---------- PROS / CONS ---------- */
+
+  .proscons{
+    display:grid;
+    grid-template-columns: 1fr;
+    gap: 22px;
+  }
+
+  @media (min-width: 700px){
+    .proscons{ grid-template-columns: 1fr 1fr; }
+  }
+
+  .proscons-col{
+    border: 1px solid var(--border);
+    background: rgba(26,34,42,0.4);
+    padding: 22px 24px;
+  }
+
+  .proscons-col h3{
+    font-family: var(--font-display);
+    font-size: 1.05rem;
+    margin-bottom: 16px;
+  }
+
+  .proscons-col ul{ list-style:none; display:flex; flex-direction:column; gap: 12px; }
+
+  .proscons-col li{
+    display:flex;
+    gap: 10px;
+    font-size: 0.92rem;
+    color: var(--text-secondary);
+  }
+
+  .proscons-col svg{ width:16px; height:16px; flex:none; margin-top: 3px; }
+
+  .col-pros svg{ color: var(--accent-teal); }
+  .col-cons svg{ color: var(--accent-amber-dim); }
+
+  /* ---------- COMPARISON TABLE ---------- */
+
+  .compare{
+    border: 1px solid var(--border);
+    background: rgba(26,34,42,0.4);
+    overflow-x: auto;
+  }
+
+  .compare-row{
+    display:grid;
+    grid-template-columns: 160px repeat(2, 1fr);
+    min-width: 620px;
+    border-top: 1px solid var(--border);
+  }
+
+  .compare-row:first-child{ border-top:none; }
+
+  .compare-row > div{
+    padding: 16px 20px;
+    font-size: 0.9rem;
+  }
+
+  .compare-row > div:not(:last-child){ border-right: 1px solid var(--border); }
+
+  .compare-row.head{
+    background: var(--bg-panel-hi);
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+  }
+
+  .compare-row .label{
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    color: var(--text-muted);
+    display:flex;
+    align-items:center;
+  }
+
+  .compare-row .val{ color: var(--text-secondary); }
+
+  /* ---------- FOOTER ---------- */
+
+  .site-footer{ border-top: 1px solid var(--border); padding: 26px 0; }
+
+  .site-footer .wrap{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 10px;
+    justify-content: space-between;
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    color: var(--text-muted);
+  }
+
+</style>
 </head>
 <body>
 
-    <header class="hero">
-        <h1>Automatización de Procesos Industriales y de Servicios</h1>
-        <p>Catálogo de proyectos, practicas y tareas enfocadas en control, sensores e IoT.</p>
-    </header>
+  <nav class="site-nav">
+    <div class="wrap">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        Panel de automatización
+      </div>
+      <div class="nav-meta">
+        <span class="dot"></span>
+        Fundamentos
+      </div>
+    </div>
+  </nav>
 
-    <main class="container">
-        <section class="grid-tareas">
+  <div class="toc-nav">
+    <ul>
+      <li><a href="#historia"><span class="num">01</span>Historia</a></li>
+      <li><a href="#introduccion"><span class="num">02</span>Introducción</a></li>
+      <li><a href="#conceptos"><span class="num">03</span>Conceptos clave</a></li>
+      <li><a href="#ciclo"><span class="num">04</span>El ciclo de la automatización</a></li>
+      <li><a href="#ventajas"><span class="num">05</span>Ventajas y desventajas</a></li>
+      <li><a href="#diferencias"><span class="num">06</span>Industrial vs. servicios</a></li>
+    </ul>
+  </div>
 
-            <article class="card">
-                <div class="card-header">
-                    <h2>Tarea 1: Fundamentos de Automatización</h2>
-                </div>
-                <div class="card-body">
-                    <p>Introducción a los conceptos clave de la automatización en la industria y los servicios. Uso de microcontroladores Arduino para la adquisición de datos de sensores y control de actuadores, integrando conectividad IoT para el monitoreo en tiempo real.</p>
-                   
-                    <div class="tags">
-                        <span class="tag">Arduino</span>
-                        <span class="tag">IoT</span>
-                        <span class="tag">Sensores</span>
-                        <span class="tag">Control</span>
-                    </div>
-                </div>
-                <div class="card-footer">
-                    <a href="#" class="btn">Ver Detalle</a>
-                </div>
-            </article>
+  <header class="hero">
+    <div class="hero-grid"></div>
+    <div class="wrap">
+      <div class="hero-content">
+        <p class="hero-kicker">Guía de fundamentos</p>
+        <h1>Fundamentos de automatización de procesos industriales y de servicios</h1>
+        <p>Una base conceptual para entender cómo se sensa, decide y actúa en un proceso automatizado, con Arduino y el Internet de las Cosas como puerta de entrada.</p>
 
-            </section>
-    </main>
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-value">6</div>
+            <div class="stat-label">SECCIONES</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">2005</div>
+            <div class="stat-label">AÑO DE ARDUINO</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">IoT</div>
+            <div class="stat-label">ENFOQUE PRINCIPAL</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+
+    <!-- 01 HISTORIA -->
+    <section class="section" id="historia">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-num">01</span>
+          <h2>Historia</h2>
+        </div>
+        <p class="section-lead">De los tableros de relés a los microcontroladores abiertos: así llegó la automatización al alcance de cualquier persona.</p>
+
+        <div class="timeline">
+          <div class="timeline-item">
+            <div class="timeline-year">Inicios&nbsp;s.&nbsp;XX</div>
+            <div class="timeline-body">
+              <h3>Control por relés</h3>
+              <p>Las primeras líneas de producción encendían y apagaban motores con relés electromecánicos cableados para seguir una secuencia fija. Cambiar el proceso significaba recablear el tablero.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">1968</div>
+            <div class="timeline-body">
+              <h3>Nace el PLC</h3>
+              <p>Modicon presenta el primer controlador lógico programable. La lógica del proceso pasa a vivir en software, y ya no hace falta recablear la planta para modificarla.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">Años&nbsp;80–90</div>
+            <div class="timeline-body">
+              <h3>Redes de planta y SCADA</h3>
+              <p>Los controladores empiezan a comunicarse entre sí y con un sistema central. Una sola persona puede supervisar varias máquinas desde un mismo tablero.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2005</div>
+            <div class="timeline-body">
+              <h3>Llega Arduino</h3>
+              <p>Un equipo en Ivrea, Italia, crea una placa de microcontrolador de hardware y software libres, pensada para que estudiantes y aficionados pudieran prototipar electrónica sin experiencia previa.</p>
+            </div>
+          </div>
+          <div class="timeline-item">
+            <div class="timeline-year">2010&nbsp;→&nbsp;hoy</div>
+            <div class="timeline-body">
+              <h3>La nube y el IoT</h3>
+              <p>Los sensores empiezan a enviar sus lecturas directamente a internet. La automatización deja de estar encerrada en una sola planta y se puede supervisar desde cualquier lugar.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 02 INTRODUCCIÓN -->
+    <section class="section" id="introduccion">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-num">02</span>
+          <h2>Introducción</h2>
+        </div>
+        <p class="section-lead">Automatizar es delegar una tarea repetitiva o riesgosa a un sistema capaz de sensar, decidir y actuar sin que una persona intervenga en cada paso.</p>
+        <p class="section-lead">Placas como Arduino, sumadas a la conectividad del Internet de las Cosas, bajaron el costo de entrada a este mundo: hoy un taller pequeño puede montar un sistema de monitoreo que hace años solo estaba al alcance de una planta grande. Las ideas que siguen aplican por igual a una línea de ensamble y a un proceso de servicio, como la atención en un mostrador o la climatización de una oficina.</p>
+      </div>
+    </section>
+
+    <!-- 03 CONCEPTOS CLAVE -->
+    <section class="section" id="conceptos">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-num">03</span>
+          <h2>Conceptos clave</h2>
+        </div>
+        <p class="section-lead">Ocho términos que aparecen en cualquier proyecto de automatización, desde un prototipo con Arduino hasta una planta completa.</p>
+
+        <dl class="concept-grid">
+          <div class="concept">
+            <dt>Sensor</dt>
+            <dd>Dispositivo que mide una variable física —temperatura, presencia, distancia— y la convierte en una señal eléctrica que el sistema puede leer.</dd>
+          </div>
+          <div class="concept">
+            <dt>Actuador</dt>
+            <dd>Dispositivo que ejecuta una acción física a partir de una señal: un motor que gira, una válvula que se abre, una luz que se enciende.</dd>
+          </div>
+          <div class="concept">
+            <dt>Controlador</dt>
+            <dd>El punto donde se procesa la lectura del sensor y se decide qué hacer. Puede ser un microcontrolador como Arduino o un PLC industrial.</dd>
+          </div>
+          <div class="concept">
+            <dt>Arduino</dt>
+            <dd>Plataforma de hardware y software libre que facilita programar un microcontrolador sin necesitar electrónica avanzada de entrada.</dd>
+          </div>
+          <div class="concept">
+            <dt>IoT (Internet de las Cosas)</dt>
+            <dd>Red de dispositivos físicos que envían y reciben datos por internet, lo que permite supervisar un proceso a distancia y en tiempo real.</dd>
+          </div>
+          <div class="concept">
+            <dt>SCADA</dt>
+            <dd>Software de supervisión que reúne los datos de varios controladores y los muestra en un solo tablero para operarios y supervisores.</dd>
+          </div>
+          <div class="concept">
+            <dt>Lazo cerrado / lazo abierto</dt>
+            <dd>Un sistema de lazo cerrado corrige su propia acción según lo que mide después de actuar. Uno de lazo abierto no revisa el resultado.</dd>
+          </div>
+          <div class="concept">
+            <dt>Protocolo de comunicación</dt>
+            <dd>El idioma que usan los dispositivos para intercambiar datos entre sí, como MQTT o Modbus, comunes en proyectos con Arduino e IoT.</dd>
+          </div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- 04 CICLO DE AUTOMATIZACIÓN -->
+    <section class="section" id="ciclo">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-num">04</span>
+          <h2>El ciclo de la automatización</h2>
+        </div>
+        <p class="section-lead">Todo sistema automatizado repite el mismo ciclo de cuatro pasos, se trate de un brazo robótico o de un termostato con Arduino.</p>
+
+        <div class="cycle-wrap">
+          <svg viewBox="0 0 480 440" role="img" aria-label="Diagrama del ciclo: sensar, procesar, actuar y retroalimentar, conectados en un círculo">
+            <defs>
+              <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="7" markerHeight="7" orient="auto-start-reverse">
+                <path d="M0,0 L10,5 L0,10 Z" fill="var(--accent-amber)"/>
+              </marker>
+            </defs>
+
+            <path class="cycle-path" marker-end="url(#arrow)" d="M240,74 A136,136 0 0 1 376,210"/>
+            <path class="cycle-path" marker-end="url(#arrow)" d="M376,210 A136,136 0 0 1 240,346"/>
+            <path class="cycle-path" marker-end="url(#arrow)" d="M240,346 A136,136 0 0 1 104,210"/>
+            <path class="cycle-path" marker-end="url(#arrow)" d="M104,210 A136,136 0 0 1 240,74"/>
+
+            <text class="cycle-center" x="240" y="205">ciclo</text>
+            <text class="cycle-center" x="240" y="220">de control</text>
+
+            <g class="cycle-node">
+              <circle cx="240" cy="74" r="30"/>
+              <text x="240" y="76">1</text>
+            </g>
+            <text class="cycle-label" x="240" y="30" text-anchor="middle">Sensar</text>
+
+            <g class="cycle-node">
+              <circle cx="376" cy="210" r="30"/>
+              <text x="376" y="212">2</text>
+            </g>
+            <text class="cycle-label" x="402" y="204" text-anchor="start">Procesar</text>
+            <text class="cycle-label" x="402" y="222" text-anchor="start"><tspan class="sub">/ decidir</tspan></text>
+
+            <g class="cycle-node">
+              <circle cx="240" cy="346" r="30"/>
+              <text x="240" y="348">3</text>
+            </g>
+            <text class="cycle-label" x="240" y="392" text-anchor="middle">Actuar</text>
+
+            <g class="cycle-node">
+              <circle cx="104" cy="210" r="30"/>
+              <text x="104" y="212">4</text>
+            </g>
+            <text class="cycle-label" x="78" y="204" text-anchor="end">Retroali-</text>
+            <text class="cycle-label" x="78" y="222" text-anchor="end">mentar</text>
+          </svg>
+        </div>
+
+        <div class="concept-grid" style="margin-top: 12px;">
+          <div class="concept">
+            <dt>1. Sensar</dt>
+            <dd>El sistema mide una variable del proceso: temperatura, nivel de un tanque, presencia de una persona.</dd>
+          </div>
+          <div class="concept">
+            <dt>2. Procesar / decidir</dt>
+            <dd>El controlador compara la lectura contra un valor esperado y decide qué acción tomar.</dd>
+          </div>
+          <div class="concept">
+            <dt>3. Actuar</dt>
+            <dd>El sistema ejecuta esa decisión a través de un actuador: enciende, apaga, abre, mueve.</dd>
+          </div>
+          <div class="concept">
+            <dt>4. Retroalimentar</dt>
+            <dd>El resultado de la acción se vuelve a medir, cerrando el ciclo y ajustando la siguiente decisión.</dd>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 05 VENTAJAS Y DESVENTAJAS -->
+    <section class="section" id="ventajas">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-num">05</span>
+          <h2>Ventajas y desventajas</h2>
+        </div>
+        <p class="section-lead">Automatizar resuelve unos problemas y crea otros. Vale la pena mirar ambos lados antes de empezar un proyecto.</p>
+
+        <div class="proscons">
+          <div class="proscons-col col-pros">
+            <h3>Ventajas</h3>
+            <ul>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                Reduce errores humanos en tareas repetitivas.
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                Opera de forma continua, sin fatiga ni turnos.
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                Genera datos constantes para tomar mejores decisiones.
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M5 13l4 4L19 7"/></svg>
+                Aleja a las personas de tareas peligrosas o insalubres.
+              </li>
+            </ul>
+          </div>
+          <div class="proscons-col col-cons">
+            <h3>Desventajas</h3>
+            <ul>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                La inversión inicial en equipo y programación puede ser alta.
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                Un fallo en el controlador puede detener todo el proceso.
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                Requiere mantenimiento y actualización constante del software.
+              </li>
+              <li>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><path d="M5 12h14"/></svg>
+                Puede desplazar tareas que antes hacía una persona.
+              </li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- 06 DIFERENCIAS -->
+    <section class="section" id="diferencias" style="border-bottom:none;">
+      <div class="wrap">
+        <div class="section-head">
+          <span class="section-num">06</span>
+          <h2>Diferencias entre automatización industrial y de servicios</h2>
+        </div>
+        <p class="section-lead">El ciclo de sensar, procesar y actuar es el mismo. Lo que cambia es qué se controla, dónde y qué tan grave es un error.</p>
+
+        <div class="compare">
+          <div class="compare-row head">
+            <div></div>
+            <div>Industrial</div>
+            <div>De servicios</div>
+          </div>
+          <div class="compare-row">
+            <div class="label">Objetivo principal</div>
+            <div class="val">Mantener la producción estable, segura y con calidad constante.</div>
+            <div class="val">Mejorar la experiencia de la persona o el tiempo de respuesta.</div>
+          </div>
+          <div class="compare-row">
+            <div class="label">Entorno típico</div>
+            <div class="val">Planta, línea de ensamble, almacén.</div>
+            <div class="val">Oficina, tienda, hogar, punto de atención al cliente.</div>
+          </div>
+          <div class="compare-row">
+            <div class="label">Variable controlada</div>
+            <div class="val">Temperatura, presión, velocidad o posición de una máquina.</div>
+            <div class="val">Ocupación, tickets pendientes, temperatura ambiente.</div>
+          </div>
+          <div class="compare-row">
+            <div class="label">Ejemplo con Arduino/IoT</div>
+            <div class="val">Sensor de vibración que detiene un motor antes de una falla.</div>
+            <div class="val">Sensor de ocupación que ajusta la iluminación de una sala.</div>
+          </div>
+          <div class="compare-row">
+            <div class="label">Tolerancia al error</div>
+            <div class="val">Muy baja: un error puede detener la producción o causar un accidente.</div>
+            <div class="val">Más alta: un error suele ser incómodo, rara vez peligroso.</div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>PANEL DE AUTOMATIZACIÓN — FUNDAMENTOS</span>
+      <span>ACTUALIZADO: 2026</span>
+    </div>
+  </footer>
 
 </body>
 </html>
