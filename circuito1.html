@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invernadero Inteligente — Centro de Multimedia y Proceso</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+    :root {
+      --bg: #12171c;
+      --bg-panel: #1a222a;
+      --bg-panel-hi: #202a33;
+      --grid-line: #26323d;
+      --border: #2c3944;
+      --accent-amber: #e8a33d;
+      --accent-amber-dim: #a8792f;
+      --accent-teal: #4fa3a8;
+      --text-primary: #edf0f2;
+      --text-secondary: #8ea1ac;
+      --text-muted: #5f7180;
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img, video, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 48px);
+    }
+
+    /* NAV */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(18, 23, 28, 0.92);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-nav .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .brand-mark {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-meta {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-meta .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.15);
+    }
+
+    @media (max-width: 600px) {
+      .nav-meta { display: none; }
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(40px, 6vw, 70px) 0;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(18,23,28,0) 0%, rgba(18,23,28,0.55) 78%, var(--bg) 100%), var(--bg);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 42px 42px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 65% at 30% 20%, black 40%, transparent 85%);
+              mask-image: radial-gradient(ellipse 70% 65% at 30% 20%, black 40%, transparent 85%);
+      opacity: 0.9;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+    }
+
+    .hero-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent-teal);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.1rem, 5vw, 3.2rem);
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    .hero p {
+      margin-top: 16px;
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+      color: var(--text-secondary);
+      max-width: 65ch;
+    }
+
+    /* SECCIONES Y TARJETAS */
+    section {
+      padding: clamp(40px, 6vw, 70px) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head {
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .section-head span {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-teal);
+    }
+
+    .panel-card {
+      position: relative;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      padding: clamp(20px, 4vw, 32px);
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+    }
+
+    /* Remaches en las esquinas */
+    .panel-card::before, .panel-card::after {
+      content: "";
+      position: absolute;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      top: 10px;
+    }
+    .panel-card::before { left: 10px; }
+    .panel-card::after { right: 10px; }
+
+    /* UPLOAD AREA */
+    .upload-zone {
+      border: 2px dashed var(--border);
+      background: var(--bg-panel-hi);
+      padding: 30px 20px;
+      text-align: center;
+      cursor: pointer;
+      transition: border-color 0.2s ease, background-color 0.2s ease;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .upload-zone:hover {
+      border-color: var(--accent-amber);
+      background: rgba(232, 163, 61, 0.05);
+    }
+
+    .upload-zone svg {
+      width: 48px;
+      height: 48px;
+      stroke: var(--accent-teal);
+    }
+
+    .upload-zone p {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .upload-zone span {
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .btn-action {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px 20px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--bg);
+      background: var(--accent-amber);
+      border: 1px solid var(--accent-amber);
+      cursor: pointer;
+      font-weight: 600;
+      transition: background 0.2s ease, color 0.2s ease;
+    }
+
+    .btn-action:hover {
+      background: transparent;
+      color: var(--accent-amber);
+    }
+
+    /* PREVIEW CONTAINERS */
+    .preview-container {
+      width: 100%;
+      max-height: 480px;
+      overflow: hidden;
+      display: none;
+      border: 1px solid var(--border);
+      background: #000;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .preview-container img, 
+    .preview-container video {
+      width: 100%;
+      height: auto;
+      max-height: 480px;
+      object-fit: contain;
+    }
+
+    /* EXPLICACIÓN PASO A PASO */
+    .grid-steps {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 768px) {
+      .grid-steps { grid-template-columns: repeat(3, 1fr); }
+    }
+
+    .step-card {
+      background: var(--bg-panel-hi);
+      border: 1px solid var(--border);
+      padding: 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    .step-num {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-amber);
+    }
+
+    .step-card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    .step-card p {
+      font-size: 0.88rem;
+      color: var(--text-secondary);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 26px 0;
+      background: var(--bg);
+    }
+
+    .site-footer .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="site-nav">
+    <div class="wrap">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        PANEL DE MONITOREO MULTIMEDIA
+      </div>
+      <div class="nav-meta">
+        <span class="dot"></span>
+        SISTEMA ACTIVO
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-grid"></div>
+    <div class="wrap">
+      <div class="hero-content">
+        <p class="hero-kicker">Panel Control — Invernadero Inteligente</p>
+        <h1>Carga de Evidencias y Funcionamiento</h1>
+        <p>Módulo para subir la documentación fotográfica del prototipo, consultar la explicación del ciclo automatizado y adjuntar video demostrativo.</p>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- APARTADO 1: SUBIR IMAGEN -->
+    <section id="apartado-imagen">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>1. Diagrama o Esquema de Prototipo</h2>
+          <span>CARGA DE IMAGEN</span>
+        </div>
+        
+        <div class="panel-card">
+          <label for="image-input" class="upload-zone" id="image-dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <rect x="3" y="3" width="18" height="18" rx="2"/>
+              <circle cx="8.5" cy="8.5" r="1.5"/>
+              <path d="M21 15l-5-5L5 21"/>
+            </svg>
+            <p>Haz clic o arrastra una imagen aquí para subirla</p>
+            <span>Formatos aceptados: PNG, JPG, WEBP</span>
+            <span class="btn-action">Seleccionar Imagen</span>
+          </label>
+          <input type="file" id="image-input" accept="image/*">
+
+          <!-- Vista previa de la imagen -->
+          <div class="preview-container" id="image-preview-container">
+            <img id="image-preview" src="" alt="Vista previa de la imagen">
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APARTADO 2: EXPLICACIÓN DEL FUNCIONAMIENTO -->
+    <section id="apartado-funcionamiento">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>2. Explicación del Funcionamiento</h2>
+          <span>LÓGICA DEL SISTEMA</span>
+        </div>
+
+        <div class="panel-card">
+          <p style="color: var(--text-secondary); font-size: 0.95rem;">
+            El sistema opera en un bucle cerrado continuo dividiéndose en tres etapas automatizadas (<strong>Medir, Decidir y Actuar</strong>). Su función principal es regular las condiciones ideales para el cultivo sin necesidad de intervención manual.
+          </p>
+
+          <div class="grid-steps">
+            <div class="step-card">
+              <span class="step-num">ETAPA 01</span>
+              <h3>Medición Constante</h3>
+              <p>Los sensores leen periódicamente los parámetros del ambiente: el sensor DHT11 mide la temperatura y humedad del aire, mientras el higrómetro monitorea la presencia de agua en el suelo.</p>
+            </div>
+
+            <div class="step-card">
+              <span class="step-num">ETAPA 02</span>
+              <h3>Procesamiento en Arduino</h3>
+              <p>El microcontrolador procesa las lecturas recibidas y las compara con los umbrales ideales programados para la planta (por ejemplo, encender ventilación si Temp > 28°C o bomba si Humedad Suelo < 30%).</p>
+            </div>
+
+            <div class="step-card">
+              <span class="step-num">ETAPA 03</span>
+              <h3>Activación de Actuadores</h3>
+              <p>El sistema envía señales al módulo de relés de 2 canales para activar la bomba de agua de riego o encender el ventilador para extraer calor, mostrando además los datos actualizados en la pantalla LCD.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- APARTADO 3: SUBIR VIDEO -->
+    <section id="apartado-video">
+      <div class="wrap">
+        <div class="section-head">
+          <h2>3. Demostración en Video</h2>
+          <span>CARGA DE VIDEO</span>
+        </div>
+
+        <div class="panel-card">
+          <label for="video-input" class="upload-zone" id="video-dropzone">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+              <polygon points="23 7 16 12 23 17 23 7"/>
+              <rect x="1" y="5" width="15" height="14" rx="2"/>
+            </svg>
+            <p>Haz clic o arrastra un video de funcionamiento aquí</p>
+            <span>Formatos aceptados: MP4, WEBM, MOV</span>
+            <span class="btn-action">Seleccionar Video</span>
+          </label>
+          <input type="file" id="video-input" accept="video/*">
+
+          <!-- Vista previa del video -->
+          <div class="preview-container" id="video-preview-container">
+            <video id="video-preview" controls></video>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>SISTEMA DE CONTROL DE INVERNADERO</span>
+      <span>2026</span>
+    </div>
+  </footer>
+
+  <!-- JAVASCRIPT PARA VISTA PREVIA LOCAL -->
+  <script>
+    // Manejo de vista previa de Imagen
+    const imageInput = document.getElementById('image-input');
+    const imagePreviewContainer = document.getElementById('image-preview-container');
+    const imagePreview = document.getElementById('image-preview');
+
+    imageInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const reader = new FileReader();
+        reader.onload = function(e) {
+          imagePreview.src = e.target.result;
+          imagePreviewContainer.style.display = 'flex';
+        }
+        reader.readAsDataURL(file);
+      }
+    });
+
+    // Manejo de vista previa de Video
+    const videoInput = document.getElementById('video-input');
+    const videoPreviewContainer = document.getElementById('video-preview-container');
+    const videoPreview = document.getElementById('video-preview');
+
+    videoInput.addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (file) {
+        const fileURL = URL.createObjectURL(file);
+        videoPreview.src = fileURL;
+        videoPreviewContainer.style.display = 'flex';
+      }
+    });
+  </script>
+
+</body>
+</html>
