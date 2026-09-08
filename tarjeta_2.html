@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Invernadero Inteligente — Expediente Técnico</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@500&display=swap');
+
+    :root {
+      --bg: #12171c;
+      --bg-panel: #1a222a;
+      --bg-panel-hi: #202a33;
+      --grid-line: #26323d;
+      --border: #2c3944;
+      --accent-amber: #e8a33d;
+      --accent-amber-dim: #a8792f;
+      --accent-teal: #4fa3a8;
+      --text-primary: #edf0f2;
+      --text-secondary: #8ea1ac;
+      --text-muted: #5f7180;
+
+      --font-display: 'Space Grotesk', sans-serif;
+      --font-body: 'IBM Plex Sans', sans-serif;
+      --font-mono: 'IBM Plex Mono', monospace;
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+
+    body {
+      background: var(--bg);
+      color: var(--text-primary);
+      font-family: var(--font-body);
+      line-height: 1.55;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    img, svg { display: block; max-width: 100%; }
+    a { color: inherit; text-decoration: none; }
+
+    .wrap {
+      max-width: 1180px;
+      margin: 0 auto;
+      padding: 0 clamp(20px, 5vw, 48px);
+    }
+
+    /* NAV */
+    .site-nav {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      background: rgba(18, 23, 28, 0.92);
+      backdrop-filter: blur(6px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .site-nav .wrap {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 64px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-family: var(--font-display);
+      font-weight: 600;
+      font-size: 1rem;
+    }
+
+    .brand-mark {
+      width: 20px;
+      height: 20px;
+    }
+
+    .nav-meta {
+      font-family: var(--font-mono);
+      font-size: 0.78rem;
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .nav-meta .dot {
+      width: 6px;
+      height: 6px;
+      border-radius: 50%;
+      background: var(--accent-amber);
+      box-shadow: 0 0 0 3px rgba(232, 163, 61, 0.15);
+    }
+
+    @media (max-width: 600px) {
+      .nav-meta { display: none; }
+    }
+
+    /* HERO */
+    .hero {
+      position: relative;
+      overflow: hidden;
+      padding: clamp(40px, 8vw, 80px) 0;
+      border-bottom: 1px solid var(--border);
+      background: linear-gradient(180deg, rgba(18,23,28,0) 0%, rgba(18,23,28,0.55) 78%, var(--bg) 100%), var(--bg);
+    }
+
+    .hero-grid {
+      position: absolute;
+      inset: 0;
+      background-image:
+        linear-gradient(var(--grid-line) 1px, transparent 1px),
+        linear-gradient(90deg, var(--grid-line) 1px, transparent 1px);
+      background-size: 42px 42px;
+      -webkit-mask-image: radial-gradient(ellipse 70% 65% at 30% 20%, black 40%, transparent 85%);
+              mask-image: radial-gradient(ellipse 70% 65% at 30% 20%, black 40%, transparent 85%);
+      opacity: 0.9;
+    }
+
+    .hero-content {
+      position: relative;
+      max-width: 800px;
+    }
+
+    .hero-kicker {
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--accent-teal);
+      margin-bottom: 12px;
+      text-transform: uppercase;
+      letter-spacing: 0.05em;
+    }
+
+    .hero h1 {
+      font-family: var(--font-display);
+      font-weight: 700;
+      font-size: clamp(2.1rem, 5vw, 3.4rem);
+      line-height: 1.1;
+      color: var(--text-primary);
+    }
+
+    .hero p {
+      margin-top: 16px;
+      font-size: clamp(0.95rem, 1.5vw, 1.1rem);
+      color: var(--text-secondary);
+      max-width: 65ch;
+    }
+
+    .hero-stats {
+      position: relative;
+      display: flex;
+      flex-wrap: wrap;
+      margin-top: 36px;
+      border: 1px solid var(--border);
+      background: rgba(26, 34, 42, 0.5);
+    }
+
+    .stat {
+      flex: 1 1 150px;
+      padding: 16px 20px;
+      border-right: 1px solid var(--border);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .stat-value {
+      font-family: var(--font-display);
+      font-size: 1.5rem;
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .stat-label {
+      font-family: var(--font-mono);
+      font-size: 0.72rem;
+      color: var(--text-muted);
+      margin-top: 4px;
+      text-transform: uppercase;
+    }
+
+    /* SECCIONES COMPARTIDAS */
+    section {
+      padding: clamp(40px, 6vw, 70px) 0;
+      border-bottom: 1px solid var(--border);
+    }
+
+    .section-head {
+      margin-bottom: 28px;
+      padding-bottom: 12px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: baseline;
+    }
+
+    .section-head h2 {
+      font-family: var(--font-display);
+      font-size: clamp(1.3rem, 2.5vw, 1.8rem);
+      font-weight: 600;
+      color: var(--text-primary);
+    }
+
+    .section-head span {
+      font-family: var(--font-mono);
+      font-size: 0.8rem;
+      color: var(--accent-teal);
+    }
+
+    /* GRID & CARDS */
+    .grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 20px;
+    }
+
+    @media (min-width: 620px) { .grid-2 { grid-template-columns: repeat(2, 1fr); } }
+    @media (min-width: 980px) { .grid-3 { grid-template-columns: repeat(3, 1fr); } }
+
+    .card {
+      position: relative;
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      padding: 24px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+
+    /* Remaches técnicos en esquinas */
+    .card::before, .card::after {
+      content: "";
+      position: absolute;
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: var(--text-muted);
+      top: 10px;
+    }
+    .card::before { left: 10px; }
+    .card::after { right: 10px; }
+
+    .card h3 {
+      font-family: var(--font-display);
+      font-size: 1.1rem;
+      color: var(--text-primary);
+    }
+
+    .card p, .card li {
+      font-size: 0.9rem;
+      color: var(--text-secondary);
+    }
+
+    .card ul {
+      list-style-type: square;
+      padding-left: 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 6px;
+    }
+
+    .tag {
+      align-self: flex-start;
+      font-family: var(--font-mono);
+      font-size: 0.7rem;
+      color: var(--accent-teal);
+      background: rgba(79, 163, 168, 0.1);
+      border: 1px solid var(--accent-teal);
+      padding: 2px 8px;
+    }
+
+    /* TABLAS RESPONSIVAS */
+    .table-container {
+      width: 100%;
+      overflow-x: auto;
+      border: 1px solid var(--border);
+      background: var(--bg-panel);
+    }
+
+    table {
+      width: 100%;
+      border-collapse: collapse;
+      text-align: left;
+      font-size: 0.88rem;
+    }
+
+    th, td {
+      padding: 12px 16px;
+      border-bottom: 1px solid var(--border);
+      border-right: 1px solid var(--border);
+    }
+
+    th {
+      font-family: var(--font-mono);
+      background: var(--bg-panel-hi);
+      color: var(--accent-amber);
+      font-weight: 500;
+      text-transform: uppercase;
+      font-size: 0.75rem;
+    }
+
+    td { color: var(--text-secondary); }
+    tr:last-child td { border-bottom: none; }
+
+    /* PSEUDOCÓDIGO & MONO BLOCK */
+    .code-block {
+      background: var(--bg-panel-hi);
+      border: 1px solid var(--border);
+      padding: 20px;
+      font-family: var(--font-mono);
+      font-size: 0.85rem;
+      color: var(--text-primary);
+      white-space: pre-wrap;
+      word-break: break-word;
+      line-height: 1.6;
+    }
+
+    /* ALUMNOS LIST */
+    .team-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+      gap: 12px;
+    }
+
+    .team-member {
+      background: var(--bg-panel);
+      border: 1px solid var(--border);
+      padding: 12px 16px;
+      font-family: var(--font-mono);
+      font-size: 0.82rem;
+      color: var(--text-primary);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .team-member::before {
+      content: ">";
+      color: var(--accent-amber);
+    }
+
+    /* FOOTER */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      padding: 26px 0;
+      background: var(--bg);
+    }
+
+    .site-footer .wrap {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+      justify-content: space-between;
+      font-family: var(--font-mono);
+      font-size: 0.75rem;
+      color: var(--text-muted);
+    }
+  </style>
+</head>
+<body>
+
+  <!-- NAVEGACIÓN -->
+  <nav class="site-nav">
+    <div class="wrap">
+      <div class="brand">
+        <svg class="brand-mark" viewBox="0 0 24 24" fill="none" stroke="var(--accent-amber)" stroke-width="2">
+          <rect x="3" y="3" width="7" height="7"/>
+          <rect x="14" y="3" width="7" height="7"/>
+          <rect x="3" y="14" width="7" height="7"/>
+          <rect x="14" y="14" width="7" height="7"/>
+        </svg>
+        INVERNADERO INTELIGENTE
+      </div>
+      <div class="nav-meta">
+        <span class="dot"></span>
+        SISTEMA AUTOMATIZADO ARDUINO
+      </div>
+    </div>
+  </nav>
+
+  <!-- HERO -->
+  <header class="hero">
+    <div class="hero-grid"></div>
+    <div class="wrap">
+      <div class="hero-content">
+        <p class="hero-kicker">Especialidad: Inteligencia Artificial — Semestre 5 "A"</p>
+        <h1>Sistema de Control Agroclimático Automatizado</h1>
+        <p>Maqueta a escala de agricultura inteligente orientada a la regulación microclimática, optimización del riego y monitoreo continuo en tiempo real para el cultivo de Chile Habanero[cite: 1].</p>
+
+        <div class="hero-stats">
+          <div class="stat">
+            <div class="stat-value">Arduino</div>
+            <div class="stat-label">Control Central[cite: 1]</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">Chile Habanero</div>
+            <div class="stat-label">Cultivo Objetivo[cite: 1]</div>
+          </div>
+          <div class="stat">
+            <div class="stat-value">$1,598.14</div>
+            <div class="stat-label">Costo Mat. (MXN)[cite: 1]</div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <!-- EQUIPO Y DATOS -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Ficha de Identificación</h2>
+          <span>03/09/2026[cite: 1]</span>
+        </div>
+        <div class="card" style="margin-bottom: 20px;">
+          <p><strong>Docente:</strong> Chirino Balcazar Jordy Jesús[cite: 1]</p>
+        </div>
+        <h3 style="font-family: var(--font-display); margin-bottom: 12px;">Integrantes del Proyecto</h3>
+        <div class="team-grid">
+          <div class="team-member">Ruiz Galder Abner Leonardo[cite: 1]</div>
+          <div class="team-member">Cundapi Solorzano Samara Valeria[cite: 1]</div>
+          <div class="team-member">Gutierrez Moguel David Yael[cite: 1]</div>
+          <div class="team-member">Niños Molina Cristian Eduardo[cite: 1]</div>
+          <div class="team-member">Guzman López Nayver Davis[cite: 1]</div>
+        </div>
+      </div>
+    </section>
+
+    <!-- DESCRIPCIÓN DEL PROCESO -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Descripción del Proceso</h2>
+          <span>El Ciclo Medir-Decidir-Actuar[cite: 1]</span>
+        </div>
+        <div class="grid grid-3">
+          <div class="card">
+            <span class="tag">01. MEDIR</span>
+            <h3>Captura de Datos</h3>
+            <p>Sensores distribuidos evalúan en tiempo real la humedad del suelo, la temperatura ambiental y la humedad del aire[cite: 1].</p>
+          </div>
+          <div class="card">
+            <span class="tag">02. DECIDIR</span>
+            <h3>Controlador Central</h3>
+            <p>Arduino procesa la información recibida y la compara con los parámetros óptimos del cultivo programados[cite: 1].</p>
+          </div>
+          <div class="card">
+            <span class="tag">03. ACTUAR</span>
+            <h3>Ejecución Mecánica</h3>
+            <p>Se activan automáticamente ventiladores y bombas de agua según las desviaciones ambientales registradas[cite: 1].</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEMA Y OBJETIVOS -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Problema y Objetivos</h2>
+          <span>Justificación[cite: 1]</span>
+        </div>
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Problema Principal</h3>
+            <p>La falta de control preciso de variables ambientales en el cultivo escolar causa daños térmicos, hongos o deshidratación[cite: 1]. Depender de la intervención manual es ineficiente y susceptible a errores humanos[cite: 1].</p>
+          </div>
+          <div class="card">
+            <h3>Objetivo General</h3>
+            <p>Desarrollar un invernadero inteligente con un sistema de riego automático que permita la reducción en el consumo hídrico y mantenga la nutrición ideal del cultivo[cite: 1].</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- SENSORES Y ACTUADORES -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Hardware y Selección de Componentes</h2>
+          <span>E/S del Sistema[cite: 1]</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Componente</th>
+                <th>Tipo</th>
+                <th>Características Técnicas</th>
+                <th>Función Principala</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td><strong>DHT11 / DHT22</strong></td>
+                <td>Sensor Digital</td>
+                <td>Tensión: 3.3V a 5V CC. Mide temperatura y humedad relativa[cite: 1].</td>
+                <td>Monitoreo del clima del aire[cite: 1].</td>
+              </tr>
+              <tr>
+                <td><strong>Higrómetro de Suelo</strong></td>
+                <td>Sensor Analógico/Digital</td>
+                <td>Tensión: 3.3V a 5V CC. Mide resistencia/capacitancia eléctrica[cite: 1].</td>
+                <td>Evaluación del nivel de agua en el sustrato[cite: 1].</td>
+              </tr>
+              <tr>
+                <td><strong>Módulo Relé (2 Canales)</strong></td>
+                <td>Actuador / Aislamiento</td>
+                <td>Control 5V. Soporta cargas de hasta 10A a 250V CA / 30V CC[cite: 1].</td>
+                <td>Conmutación de bomba y ventilador[cite: 1].</td>
+              </tr>
+              <tr>
+                <td><strong>Mini Bomba Submersible</strong></td>
+                <td>Actuador</td>
+                <td>Tensión: 3V a 6V CC. Caudal: 80-120 L/h[cite: 1].</td>
+                <td>Suministro de riego por goteo[cite: 1].</td>
+              </tr>
+              <tr>
+                <td><strong>Ventilador 5V / 12V</strong></td>
+                <td>Actuador</td>
+                <td>Consumo: 100-300 mA. Enfriamiento por convección[cite: 1].</td>
+                <td>Renovación de aire y control de CO2/temperatura[cite: 1].</td>
+              </tr>
+              <tr>
+                <td><strong>Pantalla LCD 16x2 I2C</strong></td>
+                <td>Salida Visual</td>
+                <td>Interfaz I2C (SDA/SCL). 2 líneas x 16 caracteres[cite: 1].</td>
+                <td>Despliegue local de datos en tiempo real[cite: 1].</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- ALGORITMO -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Algoritmo de Control</h2>
+          <span>Lógica del programa[cite: 1]</span>
+        </div>
+        <div class="code-block">
+INICIO
+1. Declarar variables (Humedad, temperatura del suelo, delay)[cite: 1].
+2. Configurar pines de entrada y salida (ventilador, bomba de agua, etc)[cite: 1].
+3. Inicializar pantalla LCD y sensor DHT11[cite: 1].
+
+CICLO PRINCIPAL:
+   1. Leer datos de sensores (DHT11 y Humedad de suelo)[cite: 1].
+   2. Mostrar lecturas actualizadas en la pantalla LCD[cite: 1].
+   
+   3. CONTROL DE RIEGO:
+      SI Humedad Suelo < Umbral Mínimo THEN:
+          Encender Bomba de Agua[cite: 1]
+      SINO:
+          Apagar Bomba de Agua[cite: 1]
+          
+   4. CONTROL DE VENTILACIÓN:
+      SI Temperatura Aire > Umbral Máximo THEN:
+          Encender Ventilador[cite: 1]
+      SINO:
+          Apagar Ventilador[cite: 1]
+
+   5. Pausa: Esperar 0.5 segundos[cite: 1].
+FIN DEL CICLO
+        </div>
+      </div>
+    </section>
+
+    <!-- COTIZACIÓN -->
+    <section>
+      <div class="wrap">
+        <div class="section-head">
+          <h2>Presupuesto y Materiales (BOM)</h2>
+          <span>Inversión[cite: 1]</span>
+        </div>
+        <div class="table-container">
+          <table>
+            <thead>
+              <tr>
+                <th>Material</th>
+                <th>Cant.</th>
+                <th>Subtotal</th>
+                <th>Envío</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr><td>Arduino UNO (Compatible)[cite: 1]</td><td>1</td><td>$123.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td>Sensor DHT11[cite: 1]</td><td>2</td><td>$56.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td>Sensor de Humedad de Suelo[cite: 1]</td><td>1</td><td>$51.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td>Módulo Relé 2 Canales[cite: 1]</td><td>2</td><td>$66.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td>Mini Bomba de Agua[cite: 1]</td><td>1</td><td>$49.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td>Ventilador[cite: 1]</td><td>1</td><td>$62.00</td><td>$30.00[cite: 1]</td></tr>
+              <tr><td>Pantalla LCD 16x2 I2C[cite: 1]</td><td>1</td><td>$80.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td>Base de Madera / Estructura PVC[cite: 1]</td><td>-</td><td>$344.00</td><td>$100.00[cite: 1]</td></tr>
+              <tr><td>Lámina de Nylon Transparente[cite: 1]</td><td>1</td><td>$289.00</td><td>$0.00[cite: 1]</td></tr>
+              <tr><td><strong>TOTAL ESTIMADO</strong></td><td>-</td><td colspan="2"><strong>$1,598.14 MXN</strong>[cite: 1]</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </section>
+
+    <!-- CRONOGRAMA Y CULTIVO -->
+    <section>
+      <div class="wrap">
+        <div class="grid grid-2">
+          <div class="card">
+            <h3>Cronograma de Trabajo</h3>
+            <ul>
+              <li><strong>Compra de Materiales:</strong> 11/09/26[cite: 1]</li>
+              <li><strong>Diseño del Sistema:</strong> 20/09/26[cite: 1]</li>
+              <li><strong>Programación del Código:</strong> 01-05/10/26[cite: 1]</li>
+              <li><strong>Armado y Estructura:</strong> 09-11/10/26[cite: 1]</li>
+              <li><strong>Pruebas de Campo:</strong> 11/11/26[cite: 1]</li>
+              <li><strong>Presentación Final:</strong> 10/12/26[cite: 1]</li>
+            </ul>
+          </div>
+          <div class="card">
+            <h3>Requerimientos del Cultivo Target</h3>
+            <p><strong>Planta:</strong> Chile Habanero[cite: 1]</p>
+            <ul>
+              <li><strong>Luz:</strong> 6 a 8 horas de sol directo[cite: 1].</li>
+              <li><strong>Temperatura Ideal:</strong> 25°C a 30°C (Sensible a heladas)[cite: 1].</li>
+              <li><strong>Sustrato:</strong> Tierra suelta con buen drenaje, manteniéndose ligeramente húmeda sin encharcamientos[cite: 1].</li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="site-footer">
+    <div class="wrap">
+      <span>EXPEDIENTE TÉCNICO — INVERNADERO INTELIGENTE</span>
+      <span>2026</span>
+    </div>
+  </footer>
+
+</body>
+</html>
