@@ -340,7 +340,7 @@
         <p class="section-lead">Conexión preliminar del sistema sobre Arduino UNO: sensores de entrada a la izquierda, etapa de potencia y actuadores a la derecha.</p>
 
         <div class="circuit-frame">
-          <img src="card3/circuito1.png" alt="logo" width="300" height="300">
+          <img src="card3/circuito1.png"  width="200" height="200">
           <span>DIAGRAMA ELÉCTRICO — SISTEMA DE CONTROL DE INVERNADERO</span>
           <span>ARDUINO UNO</span>
         </div>
@@ -358,7 +358,7 @@
     <section class="section" id="codigo">
       <div class="wrap">
         <div class="section-head"><span class="section-num">02</span><h2>Código para el invernadero</h2></div>
-        <p class="section-lead">Sketch de Arduino que implementa el ciclo medir → decidir → actuar: lee el DHT11,activa la bomba de agua y muestra los datos en el LCD.</p>
+        <p class="section-lead">Sketch de Arduino que implementa el ciclo medir → decidir → actuar: lee el DHT11,actia el ventilador y muestra los datos en el LCD.</p>
 
         <div class="code-panel">
           <div class="code-panel-head">
@@ -374,13 +374,14 @@
 
 //pines que usaremos
 int pin=3;
-int bomba_agua=6;
+int ventilador=6;
 int ventilador=7;
 
 DHT dht(pin,DHT11);//pin que se usara y tipo de sensor dht
 LiquidCrystal_I2C lcd(0x27,16,2);//0x27,16,2
 
 void setup(){
+  pinMode(ventilador,OUTPUT);
   dht.begin();
   lcd.init();
   lcd.backlight();
@@ -389,7 +390,6 @@ void setup(){
 
 void loop(){
   //leemos los datos de los sensores
-    int valor = map(analogRead(A0), 0, 1023, 100, 0);
     int h=dht.readHumidity();
     int t=dht.readTemperature();
     
@@ -410,18 +410,14 @@ void loop(){
       lcd.print(h);
       lcd.print("%");//el resultado es hum:(valor leido por el sensor)%
 
-      lcd.setCursor(0,1);//le decimos a la pantalla que va imprimir el mensaje en la fila 1 y columna 0
-      lcd.print("HS:");
-      lcd.print(valor);
-      lcd.print("%");//el resultado es HS:(valor leido por el sensor)%
     }
 if(){
-digitalWrite(bomba_agua,1);
+digitalWrite(ventilador,1);
       }
 else{            
-digitalWrite(bomba_agua,0);
+digitalWrite(ventilador,0);
             }
-delay(2000);
+delay(1000);
 }
 </pre>
         </div>
@@ -429,7 +425,7 @@ delay(2000);
         <div class="code-note">
           <span>Librerías: <b>Wire.h · LiquidCrystal_I2C.h · DHT.h</b></span>
           <span>Relé: <b>activo en LOW</b></span>
-          <span>Ciclo: <b>500&nbsp;ms</b></span>
+          <span>Ciclo: <b>1000&nbsp;ms</b></span>
         </div>
       </div>
     </section>
